@@ -1,0 +1,11 @@
+﻿/.idea/
+/UnityGame/.idea/
+/UnityGame/Library/
+/UnityGame/Logs/
+/UnityGame/obj/
+/UnityGame/Temp/
+/UnityGame/Assembly-CSharp.csproj
+/UnityGame/FairyGUI.csproj
+/UnityGame/FairyGUI-Editor.csproj
+/UnityGame/UnityGame.sln
+/FairyGUIEditor/FairyGUI-Editor/
