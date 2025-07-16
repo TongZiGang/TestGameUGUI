@@ -14,6 +14,10 @@ public class UIExportToolEditor : Editor
 
     private void OnEnable()
     {
+    }
+
+    private void InitReorderableList()
+    {
         reorderableList = new ReorderableList(
             serializedObject,
             serializedObject.FindProperty("entries"),
@@ -82,8 +86,17 @@ public class UIExportToolEditor : Editor
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        reorderableList.DoLayoutList();
+        if (reorderableList == null)
+        {
+            InitReorderableList();
+        }
+        reorderableList?.DoLayoutList();
         serializedObject.ApplyModifiedProperties();
+
+        if (GUILayout.Button("导出代码"))
+        {
+            ExportCode();
+        }
     }
     
     /// <summary>
@@ -98,5 +111,58 @@ public class UIExportToolEditor : Editor
                || component is ScrollRect
                || component is Dropdown
                || component is InputField;
+    }
+    /// <summary>
+    /// 导出代码
+    /// </summary>
+    private void ExportCode()
+    {
+        string savePath = Application.dataPath + "/Scripts/GameLogic/Export/UGUI/";
+        if (string.IsNullOrEmpty(savePath))
+            return;
+
+        string className = $"UI{target.GameObject().name}";
+        string filename = System.IO.Path.Combine(savePath, $"{className}.cs");
+        
+        var sb = new System.Text.StringBuilder();
+        
+        sb.AppendLine("using UnityEngine;");
+        sb.AppendLine("using UnityEngine.UI;");
+        sb.AppendLine();
+        sb.AppendLine("namespace CreatGame.UI");
+        sb.AppendLine("{");
+        sb.AppendLine($"    public class {className} : UIViewBase");
+        sb.AppendLine("    {");
+
+        // 字段定义
+
+        for (int i = 0; i < reorderableList.count; i++)
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(i);
+            sb.AppendLine("        /// <summary>");
+            sb.AppendLine("        /// ");
+            sb.AppendLine("        /// </summary>");
+
+            sb.AppendLine($"        public {element.FindPropertyRelative("selectedComponentName").stringValue} {element.FindPropertyRelative("key").stringValue}");
+        }
+        sb.AppendLine("        public override void PreLoad(GameObject view)");
+        sb.AppendLine("        {");
+        sb.AppendLine("            base.PreLoad(view);");
+        sb.AppendLine();
+        for (int i = 0; i < reorderableList.count; i++)
+        {
+            SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(i);
+            var filedName = element.FindPropertyRelative("key").stringValue;
+            var typeName = element.FindPropertyRelative("selectedComponentName").stringValue;
+            sb.AppendLine($"            {filedName} = GetGameObject(nameof({filedName})).GetComponent<{typeName}>();");
+        }
+        sb.AppendLine("        }");
+        sb.AppendLine("    }");
+        sb.AppendLine("}");
+        Debug.Log(sb.ToString());
+        System.IO.File.WriteAllText(filename, sb.ToString());
+        Debug.Log($"✅ 导出成功：{filename}");
+
+        AssetDatabase.Refresh();
     }
 }

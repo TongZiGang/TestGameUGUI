@@ -26,7 +26,6 @@ namespace CreatGame.UI
         {
             var view = new T();
             
-            view.PreLoad();
             view.InitView();
             return view;
         }

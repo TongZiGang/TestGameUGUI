@@ -1,4 +1,6 @@
-﻿namespace CreatGame.UI
+﻿using UnityEngine;
+
+namespace CreatGame.UI
 {
     public class UIViewBase
     {
@@ -7,10 +9,21 @@
         /// </summary>
         public virtual string PrefabPath { get; set; }
         /// <summary>
+        /// 窗口预制件
+        /// </summary>
+        protected GameObject m_ViewObject;
+        /// <summary>
+        /// 导出脚本
+        /// </summary>
+        protected UIExportTool m_ExportTool;
+        /// <summary>
         /// 加载窗口的时候需要预先加载的东西
         /// </summary>
-        public virtual void PreLoad()
+        public virtual void PreLoad(GameObject viewObject)
         {
+            m_ViewObject = viewObject;
+            
+            m_ExportTool = viewObject.GetComponent<UIExportTool>();
         }
         /// <summary>
         /// 初始化界面
@@ -25,6 +38,19 @@
         public virtual void CloseView()
         {
             
+        }
+        
+        protected GameObject GetGameObject(string name)
+        {
+            for (int i = 0; i < m_ExportTool.entries.Count; i++)
+            {
+                if (m_ExportTool.entries[i].key == name)
+                {
+                    return m_ExportTool.entries[i].prefab;
+                }
+            }
+
+            return null;
         }
     }
 }
