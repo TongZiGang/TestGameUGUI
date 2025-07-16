@@ -25,6 +25,7 @@ namespace CreatGame.UI
         public UIViewBase OpenView<T>(UILayer layer) where T : UIViewBase , new()
         {
             var view = new T();
+            //加载预制件
             
             view.InitView();
             return view;

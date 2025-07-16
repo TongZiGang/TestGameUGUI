@@ -133,6 +133,7 @@ public class UIExportToolEditor : Editor
         sb.AppendLine("{");
         sb.AppendLine($"    public class {className} : UIViewBase");
         sb.AppendLine("    {");
+        sb.AppendLine($"        public override string PrefabPath => \"Prefabs/UI/{target.GameObject().name}\";");
 
         // 字段定义
 

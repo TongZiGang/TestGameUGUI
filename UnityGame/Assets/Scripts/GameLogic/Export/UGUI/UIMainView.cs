@@ -5,6 +5,7 @@ namespace CreatGame.UI
 {
     public class UIMainView : UIViewBase
     {
+        public override string PrefabPath => "Prefabs/UI/MainView";
         /// <summary>
         /// 
         /// </summary>
