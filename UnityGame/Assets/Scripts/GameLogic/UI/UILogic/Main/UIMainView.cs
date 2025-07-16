@@ -12,7 +12,7 @@ namespace CreatGame.UI
 
         private void OnStarBtnClick()
         {
-            
+            Debug.Log("OnStarBtnClick");
         }
     }
 }

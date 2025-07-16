@@ -41,3 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Main
+    uniqueID: 4208407477
+    locked: 0
+  - name: Popup
+    uniqueID: 3984180815
+    locked: 0
+  - name: Notify
+    uniqueID: 3442081227
+    locked: 0
+  - name: System
+    uniqueID: 4291409731
+    locked: 0

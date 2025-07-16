@@ -8,6 +8,7 @@ public class GameStar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
         StartCoroutine(CreatGame.GameLogic.Instance.Start());
     }
 
