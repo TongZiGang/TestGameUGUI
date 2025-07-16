@@ -143,7 +143,7 @@ public class UIExportToolEditor : Editor
             sb.AppendLine("        /// ");
             sb.AppendLine("        /// </summary>");
 
-            sb.AppendLine($"        public {element.FindPropertyRelative("selectedComponentName").stringValue} {element.FindPropertyRelative("key").stringValue}");
+            sb.AppendLine($"        public {element.FindPropertyRelative("selectedComponentName").stringValue} {element.FindPropertyRelative("key").stringValue};");
         }
         sb.AppendLine("        public override void PreLoad(GameObject view)");
         sb.AppendLine("        {");

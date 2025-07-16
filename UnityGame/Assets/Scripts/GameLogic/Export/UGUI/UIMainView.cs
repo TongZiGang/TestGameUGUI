@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using CreatGame.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,5 +20,5 @@ namespace CreatGame.UI
             StarBtn = GetGameObject(nameof(StarBtn)).GetComponent<Button>();
             StarBtnText = GetGameObject(nameof(StarBtnText)).GetComponent<Text>();
         }
-    }   
+    }
 }
