@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace CreatGame.UI
 {
-    public class UIMainView : UIViewBase
+    public partial class UIMainView : UIViewBase
     {
         public override string PrefabPath => "Prefabs/UI/MainView";
         /// <summary>

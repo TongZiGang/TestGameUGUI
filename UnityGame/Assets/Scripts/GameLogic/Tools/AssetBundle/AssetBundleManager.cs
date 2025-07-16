@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
@@ -10,10 +11,15 @@ namespace CreatGame.AssetBundle
     public class AssetBundleManager : Singleton<AssetBundleManager>
     {
         /// <summary>
+        /// 是否初始化完成
+        /// </summary>
+        public bool IsInitializeAsync;
+        /// <summary>
         /// 需要初始化Addressble系统
         /// </summary>
         public AssetBundleManager()
         {
+            IsInitializeAsync = false;
             Addressables.InitializeAsync();
         }
 
@@ -54,7 +60,26 @@ namespace CreatGame.AssetBundle
                 //     }
                 // }
 #endregion
+
+                IsInitializeAsync = true;
             }
+        }
+
+        public void LoadGameObject(string assetBundleName, Action<GameObject> callback)
+        {
+            Addressables.LoadAssetAsync<GameObject>(assetBundleName).Completed += (handle) =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    var asset = handle.Result;
+                    callback?.Invoke(GameObject.Instantiate(asset));
+                }
+                else
+                {
+                    Debug.Log($"assetBundleName = {assetBundleName}   加载失败    Status = {handle.Status}");
+                    callback?.Invoke(null);
+                }
+            };
         }
     }
 }

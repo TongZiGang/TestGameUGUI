@@ -5,7 +5,8 @@ namespace CreatGame.UI
     public class UIViewBase
     {
         /// <summary>
-        /// 预制件的路径
+        /// 预制件的Addressables地址
+        /// 由导出代码自己添加
         /// </summary>
         public virtual string PrefabPath { get; set; }
         /// <summary>
@@ -17,13 +18,17 @@ namespace CreatGame.UI
         /// </summary>
         protected UIExportTool m_ExportTool;
         /// <summary>
+        /// 是否加载完成
+        /// </summary>
+        public bool IsPreLoad = false;
+        /// <summary>
         /// 加载窗口的时候需要预先加载的东西
         /// </summary>
         public virtual void PreLoad(GameObject viewObject)
         {
             m_ViewObject = viewObject;
-            
             m_ExportTool = viewObject.GetComponent<UIExportTool>();
+            IsPreLoad = true;
         }
         /// <summary>
         /// 初始化界面

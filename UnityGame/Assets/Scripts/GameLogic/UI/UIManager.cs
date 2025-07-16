@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using CreatGame.AssetBundle;
 
 namespace CreatGame.UI
 {
     public class UIManager : Singleton<UIManager>
     {
+        private GameObject m_UIRoot;
         private Dictionary<UILayer,GameObject> m_UILayers;
         private Dictionary<UILayer, Queue<UIViewBase>> m_Windows;
         /// <summary>
@@ -12,10 +15,33 @@ namespace CreatGame.UI
         /// </summary>
         public UIManager()
         {
-            m_UILayers = new Dictionary<UILayer, GameObject>();
+            m_UIRoot = GameObject.Find("UIRoot");
+            InitLayer();
             m_Windows = new Dictionary<UILayer, Queue<UIViewBase>>();
-            
         }
+        /// <summary>
+        /// 初始化layer层的预制件
+        /// </summary>
+        private void InitLayer()
+        {
+            if (m_UIRoot == null)
+            {
+                return;
+            }
+
+            m_UILayers = new Dictionary<UILayer, GameObject>();
+
+            foreach (var layer in Enum.GetValues(typeof(UILayer)))
+            {
+                var layerObj = new GameObject(Enum.GetName(typeof(UILayer), layer));
+                layerObj.transform.SetParent(m_UIRoot.transform);
+                layerObj.transform.localScale = Vector3.one;
+                layerObj.transform.localPosition = Vector3.zero;
+                layerObj.layer = LayerMask.NameToLayer("UI");
+                m_UILayers.Add((UILayer)layer,layerObj);
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -26,8 +52,23 @@ namespace CreatGame.UI
         {
             var view = new T();
             //加载预制件
-            
-            view.InitView();
+            AssetBundleManager.Instance.LoadGameObject(view.PrefabPath, (obj) =>
+            {
+                if (obj == null)
+                {
+                    Debug.LogError($"窗口加载失败{typeof(T).Name}");
+                    return;
+                }
+                
+                view.PreLoad(obj);
+                if (m_UILayers.TryGetValue(layer, out var uiLayer))
+                {
+                    obj.transform.SetParent(uiLayer.transform);
+                    obj.transform.localPosition = Vector3.zero;
+                    obj.transform.localScale = Vector3.one;
+                }
+                view.InitView();
+            });
             return view;
         }
     }
