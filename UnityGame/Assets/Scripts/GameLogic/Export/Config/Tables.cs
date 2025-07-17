@@ -14,16 +14,19 @@ namespace cfg
 public partial class Tables
 {
     public demo.Tbitem Tbitem {get; }
+    public TbLanguage TbLanguage {get; }
 
     public Tables(System.Func<string, ByteBuf> loader)
     {
         Tbitem = new demo.Tbitem(loader("demo_tbitem"));
+        TbLanguage = new TbLanguage(loader("tblanguage"));
         ResolveRef();
     }
     
     private void ResolveRef()
     {
         Tbitem.ResolveRef(this);
+        TbLanguage.ResolveRef(this);
     }
 }
 

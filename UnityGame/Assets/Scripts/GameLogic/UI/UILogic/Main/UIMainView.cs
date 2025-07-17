@@ -12,6 +12,7 @@ namespace CreatGame.UI
 
         private void OnStarBtnClick()
         {
+            StarBtnText.text = ConfigManager.Instance.Tables.TbLanguage.Get("Main_BtnTitle_Star").CN;
             Debug.Log("OnStarBtnClick");
         }
     }
