@@ -42,7 +42,7 @@ namespace CreatGame.UI
         /// </summary>
         public virtual void CloseView()
         {
-            
+            GameObject.Destroy(m_ViewObject);
         }
         
         protected GameObject GetGameObject(string name)

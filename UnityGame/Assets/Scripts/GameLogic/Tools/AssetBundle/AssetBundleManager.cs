@@ -10,6 +10,12 @@ namespace CreatGame.AssetBundle
 {
     public class AssetBundleManager : Singleton<AssetBundleManager>
     {
+        private class AssetBundleData
+        {
+            public string assetBundleName;
+            public GameObject assetBundle;
+        }
+        private Dictionary<string, AssetBundleData> assetBundles;
         /// <summary>
         /// 是否初始化完成
         /// </summary>
@@ -20,6 +26,7 @@ namespace CreatGame.AssetBundle
         public AssetBundleManager()
         {
             IsInitializeAsync = false;
+            assetBundles = new Dictionary<string, AssetBundleData>();
             Addressables.InitializeAsync();
         }
 
@@ -67,11 +74,18 @@ namespace CreatGame.AssetBundle
 
         public void LoadGameObject(string assetBundleName, Action<GameObject> callback)
         {
+            if (assetBundles.TryGetValue(assetBundleName, out var bundle))
+            {
+                callback.Invoke(GameObject.Instantiate(bundle.assetBundle));
+                return;
+            }
+
             Addressables.LoadAssetAsync<GameObject>(assetBundleName).Completed += (handle) =>
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     var asset = handle.Result;
+                    assetBundles.Add(assetBundleName, new AssetBundleData { assetBundleName = assetBundleName, assetBundle = asset });
                     callback?.Invoke(GameObject.Instantiate(asset));
                 }
                 else

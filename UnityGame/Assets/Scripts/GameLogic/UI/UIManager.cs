@@ -33,7 +33,7 @@ namespace CreatGame.UI
 
             foreach (var layer in Enum.GetValues(typeof(UILayer)))
             {
-                var layerObj = new GameObject(Enum.GetName(typeof(UILayer), layer));
+                var layerObj = m_UIRoot.transform.Find(Enum.GetName(typeof(UILayer), layer)).gameObject;
                 layerObj.transform.SetParent(m_UIRoot.transform);
                 layerObj.transform.localScale = Vector3.one;
                 layerObj.transform.localPosition = Vector3.zero;
@@ -68,8 +68,28 @@ namespace CreatGame.UI
                     obj.transform.localScale = Vector3.one;
                 }
                 view.InitView();
+
+                if (m_Windows.ContainsKey(layer) == false)
+                {
+                    m_Windows.Add(layer, new Queue<UIViewBase>());
+                }
+            
+                m_Windows[layer].Enqueue(view);
             });
+
             return view;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="layer"></param>
+        public void CloseView(UILayer layer)
+        {
+            if (m_Windows.ContainsKey(layer))
+            {
+                var view = m_Windows[layer].Dequeue();
+                view.CloseView();
+            }
         }
     }
 }
