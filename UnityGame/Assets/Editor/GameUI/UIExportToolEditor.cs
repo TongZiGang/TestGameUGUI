@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CreatGame.UI;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditorInternal;
@@ -47,6 +48,7 @@ public class UIExportToolEditor : Editor
             List<string> uguiComponentNames = new List<string>();
             if (prefab != null)
             {
+                var components = prefab.GetComponents<Component>();
                 uguiComponentNames = prefab.GetComponents<Component>()
                     .Where(c => c != null && IsUGUIComponent(c))
                     .Select(c => c.GetType().Name)
@@ -110,7 +112,8 @@ public class UIExportToolEditor : Editor
                || component is Slider
                || component is ScrollRect
                || component is Dropdown
-               || component is InputField;
+               || component is InputField
+               || component is UILoopList;
     }
     /// <summary>
     /// 导出代码
@@ -131,7 +134,7 @@ public class UIExportToolEditor : Editor
         sb.AppendLine();
         sb.AppendLine("namespace CreatGame.UI");
         sb.AppendLine("{");
-        sb.AppendLine($"    public class {className} : UIViewBase");
+        sb.AppendLine($"    public partial class {className} : UIViewBase");
         sb.AppendLine("    {");
         sb.AppendLine($"        public override string PrefabPath => \"Prefabs/UI/{target.GameObject().name}\";");
 

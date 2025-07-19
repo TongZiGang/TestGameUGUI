@@ -131,7 +131,7 @@ namespace CreatGame.AssetBundle
         /// <returns></returns>
         private AssetBundleData CacheAssetBundles(string bundleName, GameObject bundle = null)
         {
-            var data = new AssetBundleData(){assetBundleName = bundleName, assetBundle = GameObject.Instantiate(bundle)};
+            var data = new AssetBundleData(){assetBundleName = bundleName, assetBundle = bundle};
             assetBundles.Add(bundleName, data);
             return data;
         }

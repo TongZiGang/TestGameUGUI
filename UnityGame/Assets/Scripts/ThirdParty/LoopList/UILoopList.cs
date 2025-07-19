@@ -13,89 +13,39 @@ namespace CreatGame.UI
     /// item渲染函数
     /// </summary>
     public delegate void LoopListItemRenderer(GameObject item,int index);
+    [RequireComponent(typeof(UnityEngine.UI.LoopScrollRect))]
+    [DisallowMultipleComponent]
     public class UILoopList : MonoBehaviour, LoopScrollPrefabSource, LoopScrollDataSource
     {
         /// <summary>
         /// 
         /// </summary>
-        public LoopListItemProvider ListItemProvider;
-        /// <summary>
-        /// 
-        /// </summary>
         public LoopListItemRenderer ListItemRenderer;
+
         /// <summary>
         /// 
         /// </summary>
-        private Dictionary<string, Stack<GameObject>> itemPool = new Dictionary<string, Stack<GameObject>>();
+        private Stack<Transform> itemPool = new Stack<Transform>();
         /// <summary>
         /// 预制件
         /// </summary>
         public GameObject itemPrefab;
         public GameObject GetObject(int index)
         {
-            string itemPath = String.Empty;
-            if (ListItemProvider != null)
+            if (itemPool.Count == 0)
             {
-                itemPath = ListItemProvider(index);
+                return Instantiate(itemPrefab);
             }
-            else
-            {
-                itemPath = "Default";
-            }
-
-            if (itemPool.TryGetValue(itemPath, out Stack<GameObject> itemList) == false)
-            {
-                itemList = new Stack<GameObject>();
-                itemPool.Add(itemPath, itemList);
-            }
-
-            if (itemList.Count == 0)
-            {
-                if (ListItemProvider == null)
-                {
-                    if (itemPrefab != null)
-                    {
-                        itemList.Push(Instantiate(itemPrefab));
-                    }
-                    else
-                    {
-                        Debug.LogError("ItemPrefab is null and ListItemProvider == null");
-                        return null;
-                    }
-                }
-                else
-                {
-                    var item = AssetBundle.AssetBundleManager.Instance.LoadGameObject(itemPath);
-                    var export = item.GetComponent<UIViewBase>();
-                    if (export == null)
-                    {
-                        Debug.LogError("预制件没有绑定导出代码的UIViewBase");
-                    }
-
-                    export.PreLoad(item);
-                    itemList.Push(item);
-                }
-            }
-
-            return itemList.Pop();
+            Transform candidate = itemPool.Pop();
+            candidate.gameObject.SetActive(true);
+            return candidate.gameObject;
         }
 
         public void ReturnObject(Transform trans)
         {
-            var export = trans.GetComponent<UIViewBase>();
-            if (export != null)
-            {
-                if (itemPool.TryGetValue(export.PrefabPath, out Stack<GameObject> itemList) ==false)
-                {
-                    itemList = itemPool["Default"];
-                }
-                
-                itemList.Push(trans.gameObject);
-            }
-            else
-            {
-                Debug.LogError("返回对象池失败");
-            }
+            trans.gameObject.SetActive(false);
+            trans.SetParent(transform, false);
+            itemPool.Push(trans);;
         }
 
         public void ProvideData(Transform transform, int idx)
@@ -112,8 +62,7 @@ namespace CreatGame.UI
         /// 
         /// </summary>
         public LoopScrollRect ScrollRect { get; private set; }
-
-        private void Start()
+        private void Awake()
         {
             ScrollRect = GetComponent<LoopScrollRect>();
             ScrollRect.prefabSource = this;
@@ -123,13 +72,16 @@ namespace CreatGame.UI
         public int ItemCount
         {
             get => ScrollRect.totalCount;
-            set => ScrollRect.totalCount = value;
+            set
+            {
+                ScrollRect.totalCount = value;
+                ScrollRect.RefreshCells();
+            }
         }
 
-        public void RefillCells()
+        public void ScrollToItem(int index)
         {
-            ScrollRect?.RefillCells();
+            ScrollRect?.ScrollToCell(index - 1,100.0f);
         }
-        
     }
 }
