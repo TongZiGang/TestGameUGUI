@@ -71,8 +71,12 @@ namespace CreatGame.AssetBundle
                 IsInitializeAsync = true;
             }
         }
-
-        public void LoadGameObject(string assetBundleName, Action<GameObject> callback)
+        /// <summary>
+        /// 异步加载资源
+        /// </summary>
+        /// <param name="assetBundleName"></param>
+        /// <param name="callback"></param>
+        public void LoadGameObjectAsync(string assetBundleName, Action<GameObject> callback)
         {
             if (assetBundles.TryGetValue(assetBundleName, out var bundle))
             {
@@ -84,9 +88,9 @@ namespace CreatGame.AssetBundle
             {
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
-                    var asset = handle.Result;
-                    assetBundles.Add(assetBundleName, new AssetBundleData { assetBundleName = assetBundleName, assetBundle = asset });
-                    callback?.Invoke(GameObject.Instantiate(asset));
+                    var assetData = CacheAssetBundles(assetBundleName, handle.Result);
+                    Addressables.Release(handle);
+                    callback?.Invoke(GameObject.Instantiate(assetData.assetBundle));
                 }
                 else
                 {
@@ -94,6 +98,42 @@ namespace CreatGame.AssetBundle
                     callback?.Invoke(null);
                 }
             };
+        }
+        /// <summary>
+        /// 同步等待加载资源
+        /// </summary>
+        /// <param name="assetBundleName"></param>
+        public GameObject LoadGameObject(string assetBundleName)
+        {
+            if (assetBundles.TryGetValue(assetBundleName, out var bundle))
+            {
+                return GameObject.Instantiate(bundle.assetBundle);
+            }
+
+            var handle = Addressables.LoadAssetAsync<GameObject>(assetBundleName);
+            handle.WaitForCompletion();
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                bundle = CacheAssetBundles(assetBundleName, handle.Result);
+                Addressables.Release(handle);
+                
+                return GameObject.Instantiate(bundle.assetBundle);
+            }
+
+            Debug.LogError("资源加载失败");
+            return null;
+        }
+        /// <summary>
+        /// 缓存加载出来的资源
+        /// </summary>
+        /// <param name="bundleName"></param>
+        /// <param name="bundle"></param>
+        /// <returns></returns>
+        private AssetBundleData CacheAssetBundles(string bundleName, GameObject bundle = null)
+        {
+            var data = new AssetBundleData(){assetBundleName = bundleName, assetBundle = GameObject.Instantiate(bundle)};
+            assetBundles.Add(bundleName, data);
+            return data;
         }
     }
 }

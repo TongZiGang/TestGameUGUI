@@ -52,7 +52,7 @@ namespace CreatGame.UI
         {
             var view = new T();
             //加载预制件
-            AssetBundleManager.Instance.LoadGameObject(view.PrefabPath, (obj) =>
+            AssetBundleManager.Instance.LoadGameObjectAsync(view.PrefabPath, (obj) =>
             {
                 if (obj == null)
                 {
