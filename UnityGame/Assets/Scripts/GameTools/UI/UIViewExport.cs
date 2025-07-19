@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class UIExportTool : MonoBehaviour
+public class UIViewExport : MonoBehaviour
 {
     [Serializable]
     public class UIEntry

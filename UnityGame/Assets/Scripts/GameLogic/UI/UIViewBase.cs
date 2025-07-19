@@ -16,7 +16,7 @@ namespace CreatGame.UI
         /// <summary>
         /// 导出脚本
         /// </summary>
-        protected UIExportTool m_ExportTool;
+        protected UIViewExport MViewExport;
         /// <summary>
         /// 是否加载完成
         /// </summary>
@@ -27,7 +27,7 @@ namespace CreatGame.UI
         public virtual void PreLoad(GameObject viewObject)
         {
             m_ViewObject = viewObject;
-            m_ExportTool = viewObject.GetComponent<UIExportTool>();
+            MViewExport = viewObject.GetComponent<UIViewExport>();
             IsPreLoad = true;
         }
         /// <summary>
@@ -47,11 +47,11 @@ namespace CreatGame.UI
         
         protected GameObject GetGameObject(string name)
         {
-            for (int i = 0; i < m_ExportTool.entries.Count; i++)
+            for (int i = 0; i < MViewExport.entries.Count; i++)
             {
-                if (m_ExportTool.entries[i].key == name)
+                if (MViewExport.entries[i].key == name)
                 {
-                    return m_ExportTool.entries[i].prefab;
+                    return MViewExport.entries[i].prefab;
                 }
             }
 

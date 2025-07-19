@@ -8,8 +8,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-[CustomEditor(typeof(UIExportTool))]
-public class UIExportToolEditor : Editor
+[CustomEditor(typeof(UIViewExport))]
+public class UIViewExportEditor : Editor
 {
     private ReorderableList reorderableList;
 
@@ -104,7 +104,7 @@ public class UIExportToolEditor : Editor
     /// <summary>
     /// 判断是否是常见UGUI组件（你可以自行扩展）
     /// </summary>
-    private bool IsUGUIComponent(Component component)
+    public static bool IsUGUIComponent(Component component)
     {
         return component is Graphic // 基类，包含 Image、Text、RawImage
                || component is Button
