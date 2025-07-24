@@ -40,7 +40,12 @@ public class UIComponentExportEditor : Editor
                     .Where(c => c != null && UIViewExportEditor.IsUGUIComponent(c))
                     .Select(c => c.GetType().Name)
                     .Distinct()
-                    .ToList();
+                    .ToList();        
+                
+                if (prefab.GetComponent<UISelectList>() != null)
+                {
+                    uguiComponentNames.Add("UISelectList");
+                }
                 
                 if (uguiComponentNames.Count == 0)
                 {

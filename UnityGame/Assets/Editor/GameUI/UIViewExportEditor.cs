@@ -53,6 +53,11 @@ public class UIViewExportEditor : Editor
                     .Select(c => c.GetType().Name)
                     .Distinct()
                     .ToList();
+                                
+                if (prefab.GetComponent<UISelectList>() != null)
+                {
+                    uguiComponentNames.Add("UISelectList");
+                }
                 
                 if (uguiComponentNames.Count == 0)
                 {
