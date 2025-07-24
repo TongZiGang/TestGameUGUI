@@ -48,12 +48,16 @@ public class UIViewExportEditor : Editor
             List<string> uguiComponentNames = new List<string>();
             if (prefab != null)
             {
-                var components = prefab.GetComponents<Component>();
                 uguiComponentNames = prefab.GetComponents<Component>()
                     .Where(c => c != null && IsUGUIComponent(c))
                     .Select(c => c.GetType().Name)
                     .Distinct()
                     .ToList();
+                
+                if (uguiComponentNames.Count == 0)
+                {
+                    uguiComponentNames.Add("GameObject");
+                }
             }
 
             float lineHeight = EditorGUIUtility.singleLineHeight;
