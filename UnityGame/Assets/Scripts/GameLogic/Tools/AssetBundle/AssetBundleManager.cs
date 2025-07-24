@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.AddressableAssets.ResourceLocators;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceLocations;
+using UnityEngine.U2D;
 
 namespace CreatGame.AssetBundle
 {
@@ -15,7 +16,14 @@ namespace CreatGame.AssetBundle
             public string assetBundleName;
             public GameObject assetBundle;
         }
-        private Dictionary<string, AssetBundleData> assetBundles;
+        /// <summary>
+        /// 
+        /// </summary>
+        private Dictionary<string, AssetBundleData> m_AssetBundles;
+        /// <summary>
+        /// 
+        /// </summary>
+        private Dictionary<string, SpriteAtlas> m_SpriteAtlasCache;
         /// <summary>
         /// 是否初始化完成
         /// </summary>
@@ -26,7 +34,10 @@ namespace CreatGame.AssetBundle
         public AssetBundleManager()
         {
             IsInitializeAsync = false;
-            assetBundles = new Dictionary<string, AssetBundleData>();
+            m_AssetBundles = new Dictionary<string, AssetBundleData>();
+            m_SpriteAtlasCache = new Dictionary<string, SpriteAtlas>();
+            
+            
             Addressables.InitializeAsync();
         }
 
@@ -78,7 +89,7 @@ namespace CreatGame.AssetBundle
         /// <param name="callback"></param>
         public void LoadGameObjectAsync(string assetBundleName, Action<GameObject> callback)
         {
-            if (assetBundles.TryGetValue(assetBundleName, out var bundle))
+            if (m_AssetBundles.TryGetValue(assetBundleName, out var bundle))
             {
                 callback.Invoke(GameObject.Instantiate(bundle.assetBundle));
                 return;
@@ -105,7 +116,7 @@ namespace CreatGame.AssetBundle
         /// <param name="assetBundleName"></param>
         public GameObject LoadGameObject(string assetBundleName)
         {
-            if (assetBundles.TryGetValue(assetBundleName, out var bundle))
+            if (m_AssetBundles.TryGetValue(assetBundleName, out var bundle))
             {
                 return GameObject.Instantiate(bundle.assetBundle);
             }
@@ -132,8 +143,71 @@ namespace CreatGame.AssetBundle
         private AssetBundleData CacheAssetBundles(string bundleName, GameObject bundle = null)
         {
             var data = new AssetBundleData(){assetBundleName = bundleName, assetBundle = bundle};
-            assetBundles.Add(bundleName, data);
+            m_AssetBundles.Add(bundleName, data);
             return data;
+        }
+        /// <summary>
+        /// 同步加载图集
+        /// </summary>
+        /// <param name="atlasName"></param>
+        /// <returns></returns>
+        public SpriteAtlas LoadSpriteAtlas(string atlasName)
+        {
+            if (m_SpriteAtlasCache.TryGetValue(atlasName, out var atlas))
+            {
+                return atlas;
+            }
+
+            var handle = Addressables.LoadAssetAsync<SpriteAtlas>(atlasName);
+            handle.WaitForCompletion();
+            if (handle.Status == AsyncOperationStatus.Succeeded)
+            {
+                atlas = handle.Result;
+                Addressables.Release(handle);
+                m_SpriteAtlasCache.Add(atlasName, atlas);
+                return atlas;
+            }
+            
+            Debug.LogError($"图集加载失败  atlasName = {atlasName}  Status = {handle.Status}");
+            return null;
+        }
+        /// <summary>
+        /// 异步加载图集
+        /// </summary>
+        /// <param name="assetBundleName"></param>
+        /// <param name="callback"></param>
+        public void LoadSpriteAsync(string atlasName, Action<SpriteAtlas> callback)
+        {
+            if (m_SpriteAtlasCache.TryGetValue(atlasName, out var atlas))
+            {
+                callback.Invoke(atlas);
+                return;
+            }
+            Addressables.LoadAssetAsync<SpriteAtlas>(atlasName).Completed += (handle) =>
+            {
+                if (handle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    atlas = handle.Result;
+                    Addressables.Release(handle);
+                    m_SpriteAtlasCache.Add(atlasName, atlas);
+                }
+                else
+                {
+                    Debug.LogError($"图集加载失败  atlasName = {atlasName}  Status = {handle.Status}");
+                    callback?.Invoke(null);
+                }
+            };
+        }
+        /// <summary>
+        /// 释放所有的资源
+        /// </summary>
+        public void ReleaseAll()
+        {
+            foreach (var mAssetBundle in m_AssetBundles)
+            {
+                GameObject.Destroy(mAssetBundle.Value.assetBundle);
+            }
+            m_AssetBundles.Clear();
         }
     }
 }

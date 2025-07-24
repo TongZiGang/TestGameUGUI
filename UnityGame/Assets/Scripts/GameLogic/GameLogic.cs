@@ -21,6 +21,11 @@ namespace CreatGame
 
             UIManager.Instance.OpenView<UI.UIMainView>(UILayer.Main);
         }
+
+        public void Destroy()
+        {
+            AssetBundle.AssetBundleManager.Instance.ReleaseAll();
+        }
     }
 }
 

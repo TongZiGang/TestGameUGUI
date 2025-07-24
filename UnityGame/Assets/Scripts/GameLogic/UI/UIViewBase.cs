@@ -2,7 +2,7 @@
 
 namespace CreatGame.UI
 {
-    public class UIViewBase
+    public class UIViewBase : UILoader
     {
         /// <summary>
         /// 预制件的Addressables地址
@@ -16,7 +16,7 @@ namespace CreatGame.UI
         /// <summary>
         /// 导出脚本
         /// </summary>
-        protected UIViewExport MViewExport;
+        protected UIViewExport m_ViewExport;
         /// <summary>
         /// 是否加载完成
         /// </summary>
@@ -27,7 +27,7 @@ namespace CreatGame.UI
         public virtual void PreLoad(GameObject viewObject)
         {
             m_ViewObject = viewObject;
-            MViewExport = viewObject.GetComponent<UIViewExport>();
+            m_ViewExport = viewObject.GetComponent<UIViewExport>();
             IsPreLoad = true;
         }
         /// <summary>
@@ -42,16 +42,17 @@ namespace CreatGame.UI
         /// </summary>
         public virtual void CloseView()
         {
+            DisposeGameObjectCache();
             GameObject.Destroy(m_ViewObject);
         }
         
         protected GameObject GetGameObject(string name)
         {
-            for (int i = 0; i < MViewExport.entries.Count; i++)
+            for (int i = 0; i < m_ViewExport.entries.Count; i++)
             {
-                if (MViewExport.entries[i].key == name)
+                if (m_ViewExport.entries[i].key == name)
                 {
-                    return MViewExport.entries[i].prefab;
+                    return m_ViewExport.entries[i].prefab;
                 }
             }
 
