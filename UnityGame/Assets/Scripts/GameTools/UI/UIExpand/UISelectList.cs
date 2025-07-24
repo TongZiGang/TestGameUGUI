@@ -41,5 +41,19 @@ namespace CreatGame.UI
         {
             onSelectCallback?.Invoke(m_buttonList.IndexOf(btn));
         }
+
+        public int Count => m_buttonList.Count;
+
+        public Transform this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= m_buttonList.Count)
+                {
+                    return null;
+                }
+                return m_buttonList[index].transform;
+            }
+        }
     }
 }
