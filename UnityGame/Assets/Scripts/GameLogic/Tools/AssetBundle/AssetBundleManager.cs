@@ -203,10 +203,6 @@ namespace CreatGame.AssetBundle
         /// </summary>
         public void ReleaseAll()
         {
-            foreach (var mAssetBundle in m_AssetBundles)
-            {
-                GameObject.Destroy(mAssetBundle.Value.assetBundle);
-            }
             m_AssetBundles.Clear();
         }
     }
