@@ -45,18 +45,5 @@ namespace CreatGame.UI
             DisposeGameObjectCache();
             GameObject.Destroy(m_ViewObject);
         }
-        
-        protected GameObject GetGameObject(string name)
-        {
-            for (int i = 0; i < m_ViewExport.entries.Count; i++)
-            {
-                if (m_ViewExport.entries[i].key == name)
-                {
-                    return m_ViewExport.entries[i].prefab;
-                }
-            }
-
-            return null;
-        }
     }
 }

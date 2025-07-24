@@ -13,4 +13,17 @@ public class UIViewExport : MonoBehaviour
     }
 
     public List<UIEntry> entries = new List<UIEntry>();
+    
+    public GameObject GetGameObject(string name)
+    {
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (entries[i].key == name)
+            {
+                return entries[i].prefab;
+            }
+        }
+
+        return null;
+    }
 }

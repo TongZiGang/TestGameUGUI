@@ -25,22 +25,5 @@ namespace CreatGame.UI
             m_ViewExport = obj.GetComponent<UIViewExport>();
             IsPreLoad = true;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        protected GameObject GetGameObject(string name)
-        {
-            for (int i = 0; i < m_ViewExport.entries.Count; i++)
-            {
-                if (m_ViewExport.entries[i].key == name)
-                {
-                    return m_ViewExport.entries[i].prefab;
-                }
-            }
-
-            return null;
-        }
     }
 }
