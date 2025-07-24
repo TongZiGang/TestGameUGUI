@@ -113,7 +113,7 @@ public class UIComponentExportEditor : Editor
         sb.AppendLine("{");
         sb.AppendLine($"    public partial class {className} : UIComponentBase");
         sb.AppendLine("    {");
-        sb.AppendLine($"        public override string PrefabPath => \"Prefabs/UI/{target.GameObject().name}\";");
+        // sb.AppendLine($"        public override string PrefabPath => \"Prefabs/UI/{target.GameObject().name}\";");
 
         // 字段定义
 
