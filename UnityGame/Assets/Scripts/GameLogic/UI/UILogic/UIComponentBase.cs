@@ -5,7 +5,7 @@ namespace CreatGame.UI
     /// <summary>
     /// 通用的导出预制件的基类
     /// </summary>
-    public class UIComponentBase : MonoBehaviour
+    public class UIComponentBase
     {
         /// <summary>
         /// 窗口预制件
