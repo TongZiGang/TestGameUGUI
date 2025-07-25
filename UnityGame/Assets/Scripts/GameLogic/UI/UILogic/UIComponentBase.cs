@@ -14,7 +14,7 @@ namespace CreatGame.UI
         /// <summary>
         /// 导出脚本
         /// </summary>
-        protected UIViewExport m_ViewExport;
+        protected UIComponentExport m_ViewExport;
         /// <summary>
         /// 是否加载完成
         /// </summary>
@@ -22,7 +22,7 @@ namespace CreatGame.UI
         public virtual void PreLoad(GameObject obj)
         {
             m_ComponentObject = obj;
-            m_ViewExport = obj.GetComponent<UIViewExport>();
+            m_ViewExport = obj.GetComponent<UIComponentExport>();
             IsPreLoad = true;
         }
     }
