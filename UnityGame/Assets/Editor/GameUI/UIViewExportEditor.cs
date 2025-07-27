@@ -167,7 +167,9 @@ public class UIViewExportEditor : Editor
             SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(i);
             var filedName = element.FindPropertyRelative("key").stringValue;
             var typeName = element.FindPropertyRelative("selectedComponentName").stringValue;
-            sb.AppendLine($"            {filedName} = m_ViewExport.GetGameObject(nameof({filedName})).GetComponent<{typeName}>();");
+            sb.AppendLine(typeName == "GameObject"
+                ? $"            {filedName} = m_ViewExport.GetGameObject(nameof({filedName}));"
+                : $"            {filedName} = m_ViewExport.GetGameObject(nameof({filedName})).GetComponent<{typeName}>();");
         }
         sb.AppendLine("        }");
         sb.AppendLine("    }");
