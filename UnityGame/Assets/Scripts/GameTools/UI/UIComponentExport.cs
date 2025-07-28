@@ -9,9 +9,22 @@ namespace CreatGame.UI
         [Serializable]
         public class UIEntry
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public string key;
+            /// <summary>
+            /// 
+            /// </summary>
             public GameObject prefab;
+            /// <summary>
+            /// 
+            /// </summary>
             public string selectedComponentName; // 存储选择的组件类型名
+            /// <summary>
+            /// 
+            /// </summary>
+            public string annotation;//注释
         }
         /// <summary>
         /// 
