@@ -21,8 +21,15 @@ namespace CreatGame.UI
             get => selected.activeSelf;
             set
             {
-                selected?.SetActive(value);
-                unSelected?.SetActive(!value);
+                if (selected != null)
+                {
+                    selected?.SetActive(value);
+                }
+
+                if (unSelected != null)
+                {
+                    unSelected?.SetActive(!value);
+                }
             }
         }
     }
