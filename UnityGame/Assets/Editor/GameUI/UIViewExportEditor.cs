@@ -41,6 +41,7 @@ public class UIViewExportEditor : Editor
             SerializedProperty keyProp = element.FindPropertyRelative("key");
             SerializedProperty prefabProp = element.FindPropertyRelative("prefab");
             SerializedProperty selectedNameProp = element.FindPropertyRelative("selectedComponentName");
+            SerializedProperty annotation = element.FindPropertyRelative("annotation");
 
             GameObject prefab = prefabProp.objectReferenceValue as GameObject;
 
@@ -67,11 +68,12 @@ public class UIViewExportEditor : Editor
 
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float padding = 4f;
-            float thirdWidth = (rect.width - 2 * padding) / 3f;
+            float thirdWidth = (rect.width - 2 * padding) / 4f;
 
             Rect keyRect = new Rect(rect.x, rect.y + 2, thirdWidth, lineHeight);
             Rect prefabRect = new Rect(rect.x + thirdWidth + padding, rect.y + 2, thirdWidth, lineHeight);
             Rect popupRect = new Rect(rect.x + 2 * (thirdWidth + padding), rect.y + 2, thirdWidth, lineHeight);
+            Rect annotationRect = new Rect(rect.x + 3 * (thirdWidth + padding) , rect.y + 2, thirdWidth, lineHeight);
 
 // key 字段
             EditorGUI.PropertyField(keyRect, keyProp, GUIContent.none);
@@ -90,7 +92,8 @@ public class UIViewExportEditor : Editor
             {
                 EditorGUI.LabelField(popupRect, "无UGUI组件");
             }
-
+//注释
+            EditorGUI.PropertyField(annotationRect, annotation, GUIContent.none); 
         };
     }
 
@@ -153,7 +156,7 @@ public class UIViewExportEditor : Editor
         {
             SerializedProperty element = reorderableList.serializedProperty.GetArrayElementAtIndex(i);
             sb.AppendLine("        /// <summary>");
-            sb.AppendLine("        /// ");
+            sb.AppendLine($"       /// {element.FindPropertyRelative("annotation").stringValue}");
             sb.AppendLine("        /// </summary>");
 
             sb.AppendLine($"        public {element.FindPropertyRelative("selectedComponentName").stringValue} {element.FindPropertyRelative("key").stringValue};");
