@@ -55,5 +55,28 @@ namespace CreatGame.UI
                 return m_buttonList[index].transform;
             }
         }
+        /// <summary>
+        /// 重置按下状态
+        /// </summary>
+        public void ResetSelect()
+        {
+            foreach (var button in m_buttonList)
+            {
+                button.GetComponent<UISelected>().Selected = false;
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        public void SetSelect(int index)
+        {
+            for (var i = 0; i < m_buttonList.Count; i++)
+            {
+                var component = m_buttonList[i].GetComponent<UISelected>();
+                if (component == null) continue;
+                component.Selected = index == i;   
+            }
+        }
     }
 }
